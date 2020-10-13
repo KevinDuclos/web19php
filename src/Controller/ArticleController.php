@@ -2,23 +2,29 @@
 namespace src\Controller;
 
 use src\Model\Article;
+use src\Model\Categorie;
 use src\Model\BDD;
 
 class ArticleController extends AbstractController {
 
     public function Add(){
+        $categorie = new Categorie();
+        $datas = $categorie->SqlGetAll(BDD::getInstance());
         if($_POST){
+           
             $objArticle = new Article();
             $objArticle->setTitre($_POST["Titre"]);
             $objArticle->setDescription($_POST["Description"]);
             $objArticle->setDateAjout($_POST["DateAjout"]);
             $objArticle->setAuteur($_POST["Auteur"]);
-            //Exécuter l'insertion
+            $objArticle->setCategorie($_POST["categorie"]);
             $id = $objArticle->SqlAdd(BDD::getInstance());
-            // Redirection
+            
             header("Location:/article/show/$id");
         }else{
-            return $this->twig->render("Article/add.html.twig");
+            return $this->twig->render("Article/add.html.twig", array(
+                'categories'=>$datas
+            ));
         }
 
 
@@ -36,9 +42,12 @@ class ArticleController extends AbstractController {
     public function Show($id){
         $articles = new Article();
         $datas = $articles->SqlGetById(BDD::getInstance(),$id);
+        $categories = new Categorie();
+        $categorie = $categories->SqlGetById(BDD::getInstance(),$datas->categorie_id);
 
         return $this->twig->render("Article/show.html.twig", [
-            "article"=>$datas
+            "article"=>$datas,
+            'categorie'=>$categorie
         ]);
     }
 
@@ -52,21 +61,22 @@ class ArticleController extends AbstractController {
     public function Update($id){
         $articles = new Article();
         $datas = $articles->SqlGetById(BDD::getInstance(),$id);
-
+        $categories = new Categorie();
+        $categorie = $categories->SqlGetAll(BDD::getInstance());
         if($_POST){
             $objArticle = new Article();
             $objArticle->setTitre($_POST["Titre"]);
             $objArticle->setDescription($_POST["Description"]);
             $objArticle->setDateAjout($_POST["DateAjout"]);
             $objArticle->setAuteur($_POST["Auteur"]);
+            $objArticle->setCategorie($_POST["categorie"]);
             $objArticle->setId($id);
-            //Exécuter la mise à jour
             $objArticle->SqlUpdate(BDD::getInstance());
-            // Redirection
             header("Location:/article/show/$id");
         }else{
             return $this->twig->render("Article/update.html.twig", [
-                "article"=>$datas
+                "article"=>$datas,
+                "categories"=>$categorie
             ]);
         }
 

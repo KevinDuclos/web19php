@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    Liste catégorie >> {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <h1>Voici la liste des Catégorie</h1>
+    <div class="row">
+    {% for categorie in categories %}
+        <div class="col-sm-3">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ categorie.libelle }}</h5>
+                    <p>{{ categorie.code|raw }}</p>
+                    <a href="/Categorie/Show/{{ categorie.id }}" class="btn btn-primary">
+                        Consulter
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

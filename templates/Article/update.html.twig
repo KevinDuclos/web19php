@@ -1,9 +1,9 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <h1>Modification de l'article "{{ article.Titre }}"</h1>
+    <h1>Modification de l'article "{{ article.titre }}"</h1>
     <form method="post">
-        <input type="text" name="Titre" value="{{ article.Titre }}">
+        <input type="text" name="Titre" value="{{ article.titre }}">
         <textarea name="Description">
             {{ article.Description }}
         </textarea>
@@ -39,6 +39,11 @@
                 <option >Aegir</option>
             {% endif %}
 
+        </select>
+        <select name="categorie" id="categorie">
+            {% for categorie in categories %}
+                <option value="{{categorie.id}}"{% if categorie.id == article.categorie_id %} selected {% endif %}>{{categorie.libelle}}</option>
+            {% endfor %}
         </select>
         <input type="submit" value="Enregistrer les modifications">
     </form>

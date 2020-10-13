@@ -9,7 +9,7 @@ class Article {
     private $Auteur;
     private $ImageRepository;
     private $ImageFileName;
-
+    private $categorie;
     /**
      * Cette fonction retourne les X premiers mots de la description
      * @param $limitWord = LA limite en question
@@ -23,7 +23,7 @@ class Article {
 
     public function SqlAdd(\PDO $bdd){
         try {
-            $requete = $bdd->prepare("INSERT INTO articles (Titre, Description, DateAjout, Auteur, ImageRepository, ImageFilename) VALUES(:Titre, :Description, :DateAjout, :Auteur, :ImageRepository, :ImageFilename)");
+            $requete = $bdd->prepare("INSERT INTO articles (Titre, Description, DateAjout, Auteur, ImageRepository, ImageFilename, categorie_id) VALUES(:Titre, :Description, :DateAjout, :Auteur, :ImageRepository, :ImageFilename, :categorie)");
 
             $requete->execute([
                 "Titre" => $this->getTitre(),
@@ -32,6 +32,7 @@ class Article {
                 "Auteur" => $this->getAuteur(),
                 "ImageRepository" => $this->getImageRepository(),
                 "ImageFilename" => $this->getImageFileName(),
+                "categorie" => $this->getCategorie(),
             ]);
             return $bdd->lastInsertId();
         }catch (\Exception $e){
@@ -42,8 +43,9 @@ class Article {
 
     public function SqlUpdate(\PDO $bdd){
         try {
-            $requete = $bdd->prepare("UPDATE articles set Titre= :Titre, Description = :Description, Auteur = :Auteur, DateAjout = :DateAjout, ImageRepository= :ImageRepository, ImageFilename= :ImageFilename WHERE Id = :Id");
-
+            $requete = $bdd->prepare("UPDATE articles set Titre= :Titre, Description = :Description, Auteur = :Auteur, DateAjout = :DateAjout, ImageRepository= :ImageRepository, ImageFilename= :ImageFilename, categorie_id= :categorie WHERE Id = :Id");
+            // var_dump($this->getCategorie());
+            // die;
             $requete->execute([
                 "Titre" => $this->getTitre(),
                 "Description" => $this->getDescription(),
@@ -51,6 +53,7 @@ class Article {
                 "Auteur" => $this->getAuteur(),
                 "ImageRepository" => $this->getImageRepository(),
                 "ImageFilename" => $this->getImageFileName(),
+                'categorie'=>$this->getCategorie(),
                 "Id" => $this->getId()
             ]);
             return "OK";
@@ -130,7 +133,23 @@ class Article {
         $this->Titre = $Titre;
         return $this;
     }
+    /**
+     * @return mixed
+     */
+    public function getCategorie()
+    {
+        return $this->categorie;
+    }
 
+    /**
+     * @param mixed $categorie
+     * @return Article
+     */
+    public function setCategorie($categorie)
+    {
+        $this->categorie = $categorie;
+        return $this;
+    }
     /**
      * @return mixed
      */
